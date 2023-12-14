@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+max_days_difference = 8
+
 from datetime import datetime
 import random
 import csv
@@ -123,7 +126,6 @@ def write_total_points(filename, assignments):
 def main():
     people = read_people("duty_sections.txt")
     days = read_days("days_static.csv")
-    max_days_difference = 8
     assignments = assign_duties(people, days, max_days_difference)
     write_watchbill("DUTYSECTION_WATCHBILL.csv", assignments)
     write_duty_section_files(assignments)
