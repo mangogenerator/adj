@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+days_between_watch_should_be = 5
+
 from datetime import datetime
 import random
 import csv
@@ -33,7 +35,7 @@ def assign_duties(persons, days):
     acdos_per_day = 2
     
     for day, day_of_week, weight in sorted_days:
-        available_persons = [person for person in person_assignments if all(not is_within_8_days(duty, (day, day_of_week, weight)) for duty in person_assignments[person])]
+        available_persons = [person for person in person_assignments if all(not is_within_x_days(duty, (day, day_of_week, weight)) for duty in person_assignments[person])]
         
         chosen_persons = []
         for _ in range(acdos_per_day):
@@ -51,10 +53,10 @@ def assign_duties(persons, days):
 def calculate_total_weight(duties):
     return sum(weight for _, _, weight in duties)
 
-def is_within_8_days(duty1, duty2):
+def is_within_x_days(duty1, duty2):
     date1 = datetime.strptime(duty1[0], '%d%b')
     date2 = datetime.strptime(duty2[0], '%d%b')
-    return abs((date2 - date1).days) <= 5
+    return abs((date2 - date1).days) <= days_between_watch_should_be
 
 
 def calculate_range(assignments):
