@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
+days_between_watch_should_be = 8 #fine-tune this variable if need-be to constrain how many days people should have at minimum, between their duty days. If the program is generating an unfair watchbill, you may need to decrease this number.
+
 from datetime import datetime
 import random
 import csv
+
 
 def read_days(filename):
     days = []
@@ -24,16 +27,16 @@ def assign_duties(cdos, days):
     cdo_assignments = {cdo: [] for cdo in cdos}
     sorted_days = sorted(days, key=lambda x: (x[2], x[0]), reverse=True)
     
-    def is_within_10_days(duty1, duty2):
+    def is_within_x_days(duty1, duty2):
         date1 = datetime.strptime(duty1[0], '%d%b')
         date2 = datetime.strptime(duty2[0], '%d%b')
-        return abs((date2 - date1).days) <= 8
+        return abs((date2 - date1).days) <= days_between_watch_should_be
     
     def calculate_total_weight(duties):
         return sum(weight for _, _, weight in duties)
     
     for day, day_of_week, weight in sorted_days:
-        available_cdos = [cdo for cdo in cdo_assignments if all(not is_within_10_days(duty, (day, day_of_week, weight)) for duty in cdo_assignments[cdo])]
+        available_cdos = [cdo for cdo in cdo_assignments if all(not is_within_x_days(duty, (day, day_of_week, weight)) for duty in cdo_assignments[cdo])]
         
         if not available_cdos: # choose with least total weight
             chosen_cdo = min(cdo_assignments, key=lambda c: calculate_total_weight(cdo_assignments[c]))
