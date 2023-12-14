@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-max_days_difference = 8
+days_between_should_be = 8
 
 from datetime import datetime
 import random
@@ -21,14 +21,14 @@ def read_people(filename):
         people = [line.strip() for line in file]
     return people
 
-def assign_duties(people, days, max_days_difference):
+def assign_duties(people, days, days_between_should_be):
     assignments = {person: [] for person in people}
     sorted_days = sorted(days, key=lambda x: (x[2], x[0]), reverse=True)
     
     def is_within_max_days(duty1, duty2):
         date1 = datetime.strptime(duty1[0], '%d%b')
         date2 = datetime.strptime(duty2[0], '%d%b')
-        return abs((date2 - date1).days) <= max_days_difference
+        return abs((date2 - date1).days) <= days_between_should_be
     
     def calculate_total_weight(duties):
         return sum(weight for _, _, weight in duties)
@@ -126,7 +126,7 @@ def write_total_points(filename, assignments):
 def main():
     people = read_people("duty_sections.txt")
     days = read_days("days_static.csv")
-    assignments = assign_duties(people, days, max_days_difference)
+    assignments = assign_duties(people, days, days_between_should_be)
     write_watchbill("DUTYSECTION_WATCHBILL.csv", assignments)
     write_duty_section_files(assignments)
     write_total_points("DUTYSECTION_TOTAL_POINTS.txt", assignments)
